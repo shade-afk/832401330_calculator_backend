@@ -1,0 +1,21 @@
+# Render Blueprint — one-click deployment of the calculator backend.
+#
+# Usage: push this repository to GitHub, then in Render choose
+# "New +" -> "Blueprint" and point it at the repository.
+services:
+  - type: web
+    name: calculator-backend
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    healthCheckPath: /api/health
+    envVars:
+      - key: CALC_DEBUG
+        value: "0"
+      - key: CALC_CORS_ORIGINS
+        value: "*"
+      - key: CALC_DB_PATH
+        value: /opt/render/project/src/data/calculator.db
+      - key: PYTHON_VERSION
+        value: "3.12.6"
